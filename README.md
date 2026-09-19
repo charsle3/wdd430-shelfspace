@@ -1,33 +1,110 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+## Component Architecture
 
-First, run the development server:
+app/
+│
+├── layout.tsx
+├── page.tsx
+│
+├── login/
+│   └── page.tsx
+│
+├── signup/
+│   └── page.tsx
+│
+├─  library/
+│   ├── page.tsx
+│   ├── loading.tsx
+│   └── error.tsx
+│
+├── books/
+│   │
+│   ├── add/
+│   │   └── page.tsx
+│   │
+│   └── [id]/
+│       ├── page.tsx
+│       └── edit/
+│           └── page.tsx
+│
+├── profile/
+│   └── page.tsx
+│
+└── api/
+    ├── library/
+    │   └── route.ts
+    │
+    ├── books/
+    │   ├── route.ts
+    │   └── [id]/
+    │       └── route.ts
+    │
+    └── profile/
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+        └── route.ts
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+components/
+│
+├── Header.tsx
+├── NavBar.tsx
+├── Footer.tsx
+├── ProgressBar.tsx
+├── BookCard.tsx
+├── BookList.tsx
+└── error.tsx
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Design Theme & Branding
+Color palette
+Primary        #355E3B   Forest Green
+Primary Dark   #24452A
+Background     #F7F4ED   Warm Cream
+Surface        #FFFFFF
+Secondary      #D8C7A3   Soft Beige
+Accent         #A2674A   Warm Terracotta
+Text Primary   #2B2B2B
+Success        #4F7C59
+Error          #B44C4C
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Typography
+Headings:
+Playfair Display
 
-## Learn More
+Body/UI:
+Inter
 
-To learn more about Next.js, take a look at the following resources:
+## Data Model
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+User
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+{
+    "id": string required,
+    "name": string required,
+    "library?": [ {
+        "bookId": string required,
+        "progress": number required
+    } ],
+    "passHash": string required
+}
+
+Book
+{
+    "id": string required,
+    "title": string required,
+    "author": string required,
+    "totalPages?": number,
+    "description?": string,
+    "createdAt": Date
+}
+
+Review
+{
+    "id": string required,
+    "userId": string required,
+    "bookId": string required,
+    "rating": number required,
+    "content": string required
+}
 
 ## Deploy on Vercel
 
