@@ -44,6 +44,10 @@ app/
 
         └── route.ts
 
+lib/
+│
+└── connect.ts
+
 components/
 │
 ├── Header.tsx
@@ -76,7 +80,6 @@ Inter
 ## Data Model
 
 User
-
 {
     "id": string required,
     "name": string required,
