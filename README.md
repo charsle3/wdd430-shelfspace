@@ -49,14 +49,12 @@ lib/
 └── connect.ts
 
 components/
-│
 ├── Header.tsx
 ├── NavBar.tsx
 ├── Footer.tsx
 ├── ProgressBar.tsx
 ├── BookCard.tsx
-├── BookList.tsx
-└── error.tsx
+└── BookList.tsx
 
 ## Design Theme & Branding
 Color palette
