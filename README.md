@@ -44,6 +44,10 @@ app/
 
         └── route.ts
 
+lib/
+│
+└── connect.ts
+
 components/
 ├── Header.tsx
 ├── NavBar.tsx
@@ -74,7 +78,6 @@ Inter
 ## Data Model
 
 User
-
 {
     "id": string required,
     "name": string required,
