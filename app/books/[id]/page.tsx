@@ -39,7 +39,7 @@ export default async function BookPage({ params }: BookPageProps) {
 
         <div>
           <span className="inline-block rounded-full bg-[#D8C7A3]/40 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-[#24452A]">
-            Currently Reading
+            {book.status}
           </span>
 
           <h1 className="mt-5 text-5xl text-[#24452A]">{book.title}</h1>
