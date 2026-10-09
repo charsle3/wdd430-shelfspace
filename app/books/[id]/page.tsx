@@ -10,17 +10,16 @@ interface BookPageProps {
 export default async function BookPage({ params }: BookPageProps) {
   const { id } = await params;
 
-  const book = {
-    id,
-    title: "The Midnight Library",
-    author: "Matt Haig",
-    totalPages: 304,
-    currentPage: 195,
-    progress: 64,
-    description:
-      "Between life and death there is a library, and within that library, the shelves go on forever.",
-    rating: 4,
-  };
+  const baseUrl = process.env.URL || 'http://localhost:3000';
+  const response = await fetch(`${baseUrl}/api/books/${id}`, {
+      cache: 'no-store',
+  });
+
+  if (!response.ok) {
+      throw new Error('Failed to fetch book');
+  }
+
+  const { book, review } = await response.json();
 
   return (
     <section className="mx-auto max-w-6xl px-6 py-14">
@@ -51,7 +50,7 @@ export default async function BookPage({ params }: BookPageProps) {
             <ProgressBar progress={book.progress} />
 
             <p className="mt-2 text-sm text-gray-500">
-              Page {book.currentPage} of {book.totalPages}
+              Page {book.current_page} of {book.total_pages}
             </p>
           </div>
 
@@ -81,12 +80,20 @@ export default async function BookPage({ params }: BookPageProps) {
               Your rating
             </p>
 
-            <div className="mt-3 text-2xl text-[#A2674A]">★★★★☆</div>
+            {review ? (
+              <div>
+                <div className="mt-3 text-2xl text-[#A2674A]">
+                {"★".repeat(review.rating) + "☆".repeat(5 - review.rating)}
+                </div>
 
-            <p className="mt-4 text-gray-600">
-              A thoughtful story about choices, regrets, and the possibilities
-              that shape our lives.
-            </p>
+                <p className="mt-4 text-gray-600">
+                  {review.content}
+                </p>
+              </div>
+            ) : (
+              <p className="text-gray-500">You have not reviewed this book yet.</p>
+            )}
+            
           </div>
         </div>
       </div>

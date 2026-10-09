@@ -1,38 +1,17 @@
 import Link from "next/link";
 import BookList from "@/components/BookList";
 
-const books = [
-  {
-    id: "1",
-    title: "The Midnight Library",
-    author: "Matt Haig",
-    progress: 64,
-    status: "reading" as const,
-  },
-  {
-    id: "2",
-    title: "Circe",
-    author: "Madeline Miller",
-    progress: 32,
-    status: "reading" as const,
-  },
-  {
-    id: "3",
-    title: "1984",
-    author: "George Orwell",
-    progress: 100,
-    status: "completed" as const,
-  },
-  {
-    id: "4",
-    title: "The Secret History",
-    author: "Donna Tartt",
-    progress: 0,
-    status: "want-to-read" as const,
-  },
-];
+export default async function LibraryPage() {
+  const baseUrl = process.env.URL || 'http://localhost:3000';
+  const response = await fetch(`${baseUrl}/api/library`, {
+      cache: 'no-store',
+  });
 
-export default function LibraryPage() {
+  if (!response.ok) {
+      throw new Error('Failed to fetch library');
+  }
+  const books = await response.json();
+
   return (
     <section className="mx-auto max-w-7xl px-6 py-14">
       <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
@@ -73,7 +52,11 @@ export default function LibraryPage() {
       </div>
 
       <div className="mt-10">
-        <BookList books={books} />
+        {books.length === 0 ? (
+          <p className="text-gray-500">You have no books in your library.</p>
+        ) : (
+          <BookList books={books} />
+        )}
       </div>
     </section>
   );
