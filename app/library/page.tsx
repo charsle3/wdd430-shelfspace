@@ -2,7 +2,9 @@ import Link from "next/link";
 import BookList from "@/components/BookList";
 
 export default async function LibraryPage() {
-  const baseUrl = process.env.URL || 'http://localhost:3000';
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : 'http://localhost:3000';
   const response = await fetch(`${baseUrl}/api/library`, {
       cache: 'no-store',
   });

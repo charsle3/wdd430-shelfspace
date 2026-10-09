@@ -12,7 +12,9 @@ export default async function EditBookPage({
 }: EditBookPageProps) {
   const { id } = await params;
 
-  const baseUrl = process.env.URL || 'http://localhost:3000';
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : 'http://localhost:3000';
   const response = await fetch(`${baseUrl}/api/books/${id}`, {
       cache: 'no-store',
   });
