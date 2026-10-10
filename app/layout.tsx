@@ -16,8 +16,25 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "ShelfSpace",
-  description: "Your personal reading tracker",
+  title: {
+    default: "ShelfSpace",
+    template: "%s | ShelfSpace",
+  },
+
+  description:
+    "ShelfSpace is a personal reading tracker for organizing your library, tracking reading progress, and keeping your favorite books in one place.",
+
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
+  ),
+
+  openGraph: {
+    title: "ShelfSpace",
+    description:
+      "Organize your personal library, track your reading progress, and keep your favorite books in one place.",
+    type: "website",
+    siteName: "ShelfSpace",
+  },
 };
 
 export default function RootLayout({

@@ -1,6 +1,41 @@
 import Link from "next/link";
 import EditBookForm from "@/components/EditForm";
 
+import type { Metadata } from "next";
+
+type Props = {
+  params: Promise<{
+    id: string;
+  }>;
+};
+
+async function getBook(id: string) {
+  return {
+    id,
+    title: "The Midnight Library",
+    author: "Matt Haig",
+  };
+}
+
+export async function generateMetadata({
+  params,
+}: Props): Promise<Metadata> {
+  const { id } = await params;
+
+  const book = await getBook(id);
+
+  if (!book) {
+    return {
+      title: "Edit Book",
+    };
+  }
+
+  return {
+    title: `Edit ${book.title}`,
+    description: `Edit the details and reading progress for ${book.title} by ${book.author}.`,
+  };
+}
+
 interface EditBookPageProps {
   params: Promise<{
     id: string;
@@ -23,7 +58,7 @@ export default async function EditBookPage({
       throw new Error('Failed to fetch book');
   }
 
-  const { book, review } = await response.json();
+  const { book } = await response.json();
 
   return (
     <section className="mx-auto max-w-3xl px-6 py-14">

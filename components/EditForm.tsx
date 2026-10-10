@@ -9,7 +9,7 @@ const initialState: State = { message: null, errors: {} };
 
 export default function EditBookForm({ book }: { book: BookDetail }) {
   const bookId = book.id;
-  const [state, formAction] = useActionState(handleUpdateBook, initialState);
+  const [, formAction] = useActionState(handleUpdateBook, initialState);
 
   return (
     <form action={formAction} className="mt-10 space-y-7 rounded-3xl bg-white p-8">
