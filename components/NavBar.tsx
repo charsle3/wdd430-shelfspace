@@ -9,13 +9,6 @@ export default function NavBar() {
       >
         My Library
       </Link>
-
-      <Link
-        href="/books/add"
-        className="text-sm font-medium text-[#2B2B2B] hover:text-[#355E3B]"
-      >
-        Add Book
-      </Link>
     </nav>
   );
 }
