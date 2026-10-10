@@ -17,6 +17,7 @@ export interface BookDetail {
     description: string,
     rating: number,
     content: string,
+    status: "reading" | "completed" | "want-to-read";
 }
 
 export interface Book {

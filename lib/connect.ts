@@ -1,6 +1,10 @@
 import { sql } from '@vercel/postgres';
 
 import type { LibraryBook, BookDetail, Book } from './types';
+export interface Review {
+  rating: number;
+  content: string;
+}
 
 export async function getBooksByUserId(id: number): Promise<LibraryBook[]> {
     const result = await sql<LibraryBook>`
@@ -48,13 +52,18 @@ export async function getBookById(bookId: number, userId: number): Promise<BookD
     return result.rows[0] ?? null;
 }
 
-export async function getReviewsByBookAndUser(bookId: number, userId: number): Promise<{ rating: number, content: string } | null> {
-    const result = await sql<{ rating: number, content: string }>`
-        SELECT rating, content
-        FROM reviews
-        WHERE book_id = ${bookId} AND user_id = ${userId}`;
+export async function getReviewsByBookAndUser(
+  bookId: number,
+  userId: number
+): Promise<Review | null> {
+  const result = await sql<Review>`
+    SELECT rating, content
+    FROM reviews
+    WHERE book_id = ${bookId}
+      AND user_id = ${userId};
+  `;
 
-    return result.rows[0] ?? null;
+  return result.rows[0] ?? null;
 }
 
 export async function createBook(book: Omit<Book, 'id'>): Promise<Book> {
@@ -105,17 +114,79 @@ export async function updateBook(id: number, book: Omit<Book, 'id'>): Promise<Bo
     return result.rows[0] ?? null;
 }
 
-export async function createReview(review: { user_id: number, book_id: number, rating: number, content: string }): Promise<{ rating: number, content: string }> {
-    const result = await sql<{ rating: number, content: string }>`
-        INSERT INTO reviews (user_id, book_id, rating, content)
-        VALUES (
-            ${review.user_id},
-            ${review.book_id},
-            ${review.rating},
-            ${review.content}
-        )
-        RETURNING rating, content`;
-    return result.rows[0];
+export async function createReview(review: {
+  user_id: number;
+  book_id: number;
+  rating: number;
+  content: string;
+}): Promise<Review | null> {
+  const result = await sql<Review>`
+    INSERT INTO reviews (
+      user_id,
+      book_id,
+      rating,
+      content
+    )
+    SELECT
+      ${review.user_id},
+      ${review.book_id},
+      ${review.rating},
+      ${review.content}
+    WHERE EXISTS (
+      SELECT 1
+      FROM library
+      WHERE user_id = ${review.user_id}
+        AND book_id = ${review.book_id}
+    )
+    AND NOT EXISTS (
+      SELECT 1
+      FROM reviews
+      WHERE user_id = ${review.user_id}
+        AND book_id = ${review.book_id}
+    )
+    RETURNING rating, content;
+  `;
+
+  return result.rows[0] ?? null;
+}
+
+export async function updateReview(
+  bookId: number,
+  userId: number,
+  rating: number,
+  content: string
+): Promise<Review | null> {
+  const result = await sql<Review>`
+    UPDATE reviews
+    SET
+      rating = ${rating},
+      content = ${content}
+    WHERE book_id = ${bookId}
+      AND user_id = ${userId}
+      AND EXISTS (
+        SELECT 1
+        FROM library
+        WHERE book_id = ${bookId}
+          AND user_id = ${userId}
+      )
+    RETURNING rating, content;
+  `;
+
+  return result.rows[0] ?? null;
+}
+
+export async function deleteReview(
+  bookId: number,
+  userId: number
+): Promise<boolean> {
+  const result = await sql`
+    DELETE FROM reviews
+    WHERE book_id = ${bookId}
+      AND user_id = ${userId}
+    RETURNING book_id;
+  `;
+
+  return result.rows.length > 0;
 }
 
 export async function deleteBook(id: number): Promise<boolean> {

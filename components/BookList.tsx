@@ -1,7 +1,7 @@
 import BookCard from "./BookCard";
 
 interface Book {
-  id: string;
+  id: number;
   title: string;
   author: string;
   progress: number;

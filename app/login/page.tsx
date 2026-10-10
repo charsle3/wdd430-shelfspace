@@ -1,4 +1,11 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Login",
+  description:
+    "Log in to ShelfSpace to access your personal library and continue tracking your reading progress.",
+};
 
 export default function LoginPage() {
   return (
