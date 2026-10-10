@@ -4,10 +4,9 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 
 import ProgressBar from "@/components/ProgressBar";
-import {
-  getBookById,
-  getReviewsByBookAndUser,
-} from "@/lib/connect";
+import { getBookById,getReviewsByBookAndUser } from "@/lib/connect";
+
+import ReviewSection from "@/components/ReviewSection";
 
 interface BookPageProps {
   params: Promise<{
@@ -155,28 +154,8 @@ export default async function BookPage({
             </p>
           </div>
 
-          <div className="mt-10 rounded-2xl bg-white p-6">
-            <p className="text-sm font-semibold uppercase tracking-widest text-[#A2674A]">
-              Your rating
-            </p>
+          <ReviewSection bookId={book.id} review={review} />
 
-            {review ? (
-              <>
-                <div className="mt-3 text-2xl text-[#A2674A]">
-                  {"★".repeat(review.rating)}
-                  {"☆".repeat(5 - review.rating)}
-                </div>
-
-                <p className="mt-4 text-gray-600">
-                  {review.content}
-                </p>
-              </>
-            ) : (
-              <p className="mt-4 text-gray-500">
-                You have not reviewed this book yet.
-              </p>
-            )}
-          </div>
         </div>
       </div>
     </section>

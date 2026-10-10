@@ -2,7 +2,7 @@ import Link from "next/link";
 import ProgressBar from "./ProgressBar";
 
 interface BookCardProps {
-  id: string;
+  id: number;
   title: string;
   author: string;
   progress: number;
