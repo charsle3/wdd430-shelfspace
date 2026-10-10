@@ -1,6 +1,14 @@
+'use client'
+
 import Link from "next/link";
+import { useActionState } from 'react';
+import { handleAddBook, State } from "@/lib/actions";
+
+const initialState: State = { message: null, errors: {} };
 
 export default function AddBookPage() {
+  const [state, formAction] = useActionState(handleAddBook, initialState);
+
   return (
     <section className="mx-auto max-w-3xl px-6 py-14">
       <Link
@@ -22,7 +30,7 @@ export default function AddBookPage() {
         </p>
       </div>
 
-      <form className="mt-10 space-y-7 rounded-3xl bg-white p-8 shadow-sm">
+      <form action={formAction} className="mt-10 space-y-7 rounded-3xl bg-white p-8 shadow-sm">
         <div>
           <label htmlFor="title" className="mb-2 block font-semibold">
             Book title
@@ -31,6 +39,7 @@ export default function AddBookPage() {
           <input
             id="title"
             type="text"
+            name="title"
             placeholder="The Great Gatsby"
             className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#355E3B]"
           />
@@ -44,37 +53,24 @@ export default function AddBookPage() {
           <input
             id="author"
             type="text"
+            name="author"
             placeholder="F. Scott Fitzgerald"
             className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#355E3B]"
           />
         </div>
 
         <div>
-          <label htmlFor="pages" className="mb-2 block font-semibold">
+          <label htmlFor="total_pages" className="mb-2 block font-semibold">
             Total pages
           </label>
 
           <input
-            id="pages"
+            id="total_pages"
             type="number"
+            name="total_pages"
             placeholder="180"
             className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#355E3B]"
           />
-        </div>
-
-        <div>
-          <label htmlFor="status" className="mb-2 block font-semibold">
-            Reading status
-          </label>
-
-          <select
-            id="status"
-            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 outline-none focus:border-[#355E3B]"
-          >
-            <option>Want to Read</option>
-            <option>Currently Reading</option>
-            <option>Completed</option>
-          </select>
         </div>
 
         <div>
@@ -84,6 +80,7 @@ export default function AddBookPage() {
 
           <textarea
             id="description"
+            name="description"
             rows={5}
             placeholder="Add a description..."
             className="w-full resize-none rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#355E3B]"

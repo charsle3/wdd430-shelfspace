@@ -1,4 +1,5 @@
 import Link from "next/link";
+import EditBookForm from "@/components/EditForm";
 
 interface EditBookPageProps {
   params: Promise<{
@@ -11,12 +12,18 @@ export default async function EditBookPage({
 }: EditBookPageProps) {
   const { id } = await params;
 
-  const book = {
-    title: "The Midnight Library",
-    author: "Matt Haig",
-    totalPages: 304,
-    progress: 64,
-  };
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : 'http://localhost:3000';
+  const response = await fetch(`${baseUrl}/api/books/${id}`, {
+      cache: 'no-store',
+  });
+
+  if (!response.ok) {
+      throw new Error('Failed to fetch book');
+  }
+
+  const { book, review } = await response.json();
 
   return (
     <section className="mx-auto max-w-3xl px-6 py-14">
@@ -33,90 +40,7 @@ export default async function EditBookPage({
         <h1 className="mt-2 text-5xl text-[#24452A]">Edit Book</h1>
       </div>
 
-      <form className="mt-10 space-y-7 rounded-3xl bg-white p-8">
-        <div>
-          <label htmlFor="title" className="mb-2 block font-semibold">
-            Title
-          </label>
-
-          <input
-            id="title"
-            type="text"
-            defaultValue={book.title}
-            className="w-full rounded-xl border border-gray-200 px-4 py-3"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="author" className="mb-2 block font-semibold">
-            Author
-          </label>
-
-          <input
-            id="author"
-            type="text"
-            defaultValue={book.author}
-            className="w-full rounded-xl border border-gray-200 px-4 py-3"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="pages" className="mb-2 block font-semibold">
-            Total pages
-          </label>
-
-          <input
-            id="pages"
-            type="number"
-            defaultValue={book.totalPages}
-            className="w-full rounded-xl border border-gray-200 px-4 py-3"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="progress" className="mb-2 block font-semibold">
-            Reading progress
-          </label>
-
-          <input
-            id="progress"
-            type="number"
-            min="0"
-            max="100"
-            defaultValue={book.progress}
-            className="w-full rounded-xl border border-gray-200 px-4 py-3"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="status" className="mb-2 block font-semibold">
-            Status
-          </label>
-
-          <select
-            id="status"
-            defaultValue="reading"
-            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3"
-          >
-            <option value="want-to-read">Want to Read</option>
-            <option value="reading">Currently Reading</option>
-            <option value="completed">Completed</option>
-          </select>
-        </div>
-
-        <div className="flex justify-end gap-3">
-          <Link
-            href={`/books/${id}`}
-            className="rounded-full border border-gray-300 px-6 py-3 font-semibold"
-          >
-            Cancel
-          </Link>
-
-          <button className="rounded-full bg-[#355E3B] px-6 py-3 font-semibold text-white">
-            Save Changes
-          </button>
-        </div>
-      </form>
+      <EditBookForm book={book} />
     </section>
   );
 }

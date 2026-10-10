@@ -53,6 +53,7 @@ components/
 ├── NavBar.tsx
 ├── Footer.tsx
 ├── ProgressBar.tsx
+├── EditForm.tsx
 ├── BookCard.tsx
 └── BookList.tsx
 
