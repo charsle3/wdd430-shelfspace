@@ -1,3 +1,11 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Profile",
+  description:
+    "View and manage your ShelfSpace profile, reading activity, and personal reading statistics.",
+};
+
 export default function ProfilePage() {
   return (
     <section className="mx-auto max-w-6xl px-6 py-14">

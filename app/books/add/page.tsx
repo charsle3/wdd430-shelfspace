@@ -1,4 +1,11 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Add Book",
+  description:
+    "Add a new book to your ShelfSpace library and start tracking your reading progress.",
+};
 
 export default function AddBookPage() {
   return (

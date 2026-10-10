@@ -1,5 +1,12 @@
 import Link from "next/link";
 import BookList from "@/components/BookList";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "My Library",
+  description:
+    "View and manage your ShelfSpace library, including books you are reading, completed books, and books you want to read.",
+};
 
 const books = [
   {
