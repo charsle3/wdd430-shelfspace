@@ -11,6 +11,13 @@ export async function GET(request: Request, { params }: BookPageProps) {
   const book = await getBookById(Number(id), 1); // Replace 1 with the actual user ID when authentication is implemented
   const review = await getReviewsByBookAndUser(Number(id), 1); // Replace 1 with the actual user ID when authentication is implemented
 
+  if (!book) {
+    return Response.json(
+      { message: "Book not found" },
+      { status: 404 }
+    );
+  }
+
   return new Response(JSON.stringify({ book, review }), {
     headers: { "Content-Type": "application/json" },
   });

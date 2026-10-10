@@ -84,11 +84,24 @@ export async function updateBook(id: number, book: Omit<Book, 'id'>): Promise<Bo
             UPDATE books
             SET title = ${book.title}, author = ${book.author}, total_pages = ${book.total_pages}, description = ${book.description}
             WHERE id = ${id}
-            RETURNING id
+            RETURNING id, title, author, total_pages, description
+        ),
+        updated_library AS (
+            UPDATE library
+            SET progress = ${book.progress}
+            WHERE book_id IN (SELECT id FROM updated_book)
+            AND user_id = 1
+            RETURNING book_id, progress
         )
-        UPDATE library
-        SET progress = ${book.progress}
-        WHERE book_id IN (SELECT id FROM updated_book) AND user_id = 1;`;
+        SELECT
+        b.id,
+        b.title,
+        b.author,
+        b.total_pages,
+        b.description,
+        l.progress
+        FROM updated_book as b
+        JOIN updated_library as l ON b.id = l.book_id;`;
     return result.rows[0] ?? null;
 }
 

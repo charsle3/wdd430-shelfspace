@@ -27,6 +27,7 @@ export type State = {
 
 export async function handleAddBook(prevState: State, formData: FormData): Promise<State> {
   const raw = {
+    id: 1, // Hardcoded for validation, value is not passed on add, only used to satisfy the schema
     title: formData.get('title') as string,
     author: String(formData.get('author')),
     description: String(formData.get('description')),

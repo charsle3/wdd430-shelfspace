@@ -17,6 +17,20 @@ export default async function BookPage({ params }: BookPageProps) {
       cache: 'no-store',
   });
 
+  if (response.status === 404) {
+      return (
+        <section className="mx-auto max-w-6xl px-6 py-14">
+          <Link
+            href="/library"
+            className="text-sm font-medium text-[#355E3B] hover:underline"
+          >
+            ← Back to library
+          </Link>
+          <p className="text-red-500">Book not found</p>
+        </section>
+      );
+  }
+
   if (!response.ok) {
       throw new Error('Failed to fetch book');
   }
