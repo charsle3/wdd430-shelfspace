@@ -1,12 +1,18 @@
 import Link from "next/link";
 import BookList from "@/components/BookList";
+import { headers } from "next/headers";
 
 export default async function LibraryPage() {
   const baseUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
     : 'http://localhost:3000';
+
+  const cookie = (await headers()).get('cookie');
   const response = await fetch(`${baseUrl}/api/library`, {
       cache: 'no-store',
+      headers: {
+        cookie: cookie || '',
+      },
   });
 
   if (!response.ok) {

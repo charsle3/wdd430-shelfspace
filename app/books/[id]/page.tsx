@@ -1,5 +1,7 @@
 import Link from "next/link";
 import ProgressBar from "@/components/ProgressBar";
+import { headers } from "next/headers";
+import { handleRemoveBook } from "@/lib/actions";
 
 interface BookPageProps {
   params: Promise<{
@@ -13,8 +15,12 @@ export default async function BookPage({ params }: BookPageProps) {
   const baseUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
     : 'http://localhost:3000';
+  const cookie = (await headers()).get('cookie');
   const response = await fetch(`${baseUrl}/api/books/${id}`, {
       cache: 'no-store',
+      headers: {
+        cookie: cookie || '',
+      },
   });
 
   if (response.status === 404) {
@@ -77,10 +83,12 @@ export default async function BookPage({ params }: BookPageProps) {
             >
               Edit Book
             </Link>
-
-            <button className="rounded-full border border-[#B44C4C] px-6 py-3 font-semibold text-[#B44C4C]">
-              Remove
-            </button>
+            <form action={handleRemoveBook}>
+              <input type="hidden" name="id" value={id} />
+              <button type="submit" className="rounded-full border border-[#B44C4C] cursor-pointer px-6 py-3 font-semibold text-[#B44C4C]">
+                Remove
+              </button>
+            </form>
           </div>
 
           <div className="mt-12 border-t border-[#D8C7A3]/50 pt-8">

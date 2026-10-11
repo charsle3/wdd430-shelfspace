@@ -80,10 +80,10 @@ Inter
 
 User
 {
-    "id": string required,
+    "id": number required,
     "name": string required,
     "library?": [ {
-        "bookId": string required,
+        "bookId": number required,
         "progress": number required
     } ],
     "passHash": string required
@@ -91,7 +91,7 @@ User
 
 Book
 {
-    "id": string required,
+    "id": number required,
     "title": string required,
     "author": string required,
     "totalPages?": number,
@@ -101,9 +101,9 @@ Book
 
 Review
 {
-    "id": string required,
-    "userId": string required,
-    "bookId": string required,
+    "id": number required,
+    "userId": number required,
+    "bookId": number required,
     "rating": number required,
     "content": string required
 }

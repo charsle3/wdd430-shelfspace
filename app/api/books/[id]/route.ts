@@ -1,4 +1,5 @@
-import { getBookById, getReviewsByBookAndUser } from "@/lib/connect";
+import { getBookById, getReviewsByBookAndUser, getUserByName } from "@/lib/connect";
+import { auth } from "@/auth";
 
 interface BookPageProps {
   params: Promise<{
@@ -7,9 +8,20 @@ interface BookPageProps {
 }
 
 export async function GET(request: Request, { params }: BookPageProps) {
+  const session = await auth();
+
+  if (!session?.user?.name) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  const userId = await getUserByName(session.user.name);
+
   const { id } = await params;
-  const book = await getBookById(Number(id), 1); // Replace 1 with the actual user ID when authentication is implemented
-  const review = await getReviewsByBookAndUser(Number(id), 1); // Replace 1 with the actual user ID when authentication is implemented
+  const book = await getBookById(Number(id), userId[0].id);
+  const review = await getReviewsByBookAndUser(Number(id), userId[0].id);
 
   if (!book) {
     return Response.json(

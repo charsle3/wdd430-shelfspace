@@ -3,7 +3,10 @@
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { createBook, updateBook } from './connect';
+import { createBook, updateBook, createUser, getUserByName, deleteBook } from './connect';
+import bcrypt from 'bcryptjs';
+import { signIn, auth } from '@/auth';
+import { AuthError } from 'next-auth';
 
 const bookSchema = z.object({
   id: z.number().min(1),
@@ -14,6 +17,11 @@ const bookSchema = z.object({
   progress: z.number().min(0).max(100)
 });
 
+const userSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  password: z.string().min(6, "Password must be at least 6 characters long"),
+});
+
 export type State = {
   message: string | null;
   errors: {
@@ -22,10 +30,23 @@ export type State = {
     description?: string;
     total_pages?: string;
     progress?: string;
+    name?: string;
+    password?: string;
   };
 };
 
+async function requireOwnerSession() {
+  const session = await auth();
+  if (!session?.user) throw new Error('Not authenticated');
+  return session;
+}
+
 export async function handleAddBook(prevState: State, formData: FormData): Promise<State> {
+  const session = await requireOwnerSession();
+
+  if (!session?.user?.name) throw new Error('Not authenticated');
+  const userId = Number((await getUserByName(session.user.name))[0].id); 
+  
   const raw = {
     id: 1, // Hardcoded for validation, value is not passed on add, only used to satisfy the schema
     title: formData.get('title') as string,
@@ -44,13 +65,18 @@ export async function handleAddBook(prevState: State, formData: FormData): Promi
     } as State;
   }
 
-  await createBook(parsed.data);
+  await createBook(userId, parsed.data);
 
   revalidatePath("/library");
   redirect("/library");
 }
 
 export async function handleUpdateBook(prevState: State, formData: FormData): Promise<State> {
+  const session = await requireOwnerSession();
+
+  if (!session?.user?.name) throw new Error('Not authenticated');
+  const userId = Number((await getUserByName(session.user.name))[0].id); 
+
   const raw = {
     id: Number(formData.get('id')),
     title: formData.get('title') as string,
@@ -69,8 +95,80 @@ export async function handleUpdateBook(prevState: State, formData: FormData): Pr
     } as State;
   }
 
-  await updateBook(parsed.data.id, parsed.data);
+  await updateBook(userId, parsed.data);
 
   revalidatePath("/library");
   redirect(`/books/${parsed.data.id}`);
+}
+
+export async function handleAddUser(prevState: State, formData: FormData): Promise<State> {
+  await requireOwnerSession();
+  const raw = {
+    name: String(formData.get('name')),
+    password: String(formData.get('password')),
+  }
+
+  const parsed = userSchema.safeParse(raw);
+
+
+  if (!parsed.success) {
+    return {
+      message: "Validation failed",
+      errors: parsed.error.flatten().fieldErrors,
+    } as State;
+  }
+
+  const userExists = await getUserByName(parsed.data.name);
+  if (userExists.length > 0) {
+    return {
+      message: "User already exists",
+      errors: {
+        name: "User with this name already exists"
+      }
+    } as State;
+  }
+
+  const newUser = {
+    name: parsed.data.name,
+    pass_hash: bcrypt.hashSync(parsed.data.password, bcrypt.genSaltSync(10))
+  }
+
+  const createdUser = await createUser(newUser);
+  console.log('createdUser', createdUser);
+
+  revalidatePath("/library");
+  redirect("/library");
+}
+
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    await signIn('credentials', formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid email or password.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
+    throw error; // re-throw so Next.js handles redirects correctly
+  }
+}
+
+export async function handleRemoveBook(formData: FormData) {
+  const session = await requireOwnerSession();
+
+  if (!session?.user?.name) throw new Error('Not authenticated');
+  const userId = Number((await getUserByName(session.user.name))[0].id); 
+
+  const bookId = Number(formData.get('id'));
+
+  await deleteBook(userId, bookId);
+
+  revalidatePath("/library");
+  redirect("/library");
 }

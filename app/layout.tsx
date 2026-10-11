@@ -4,6 +4,7 @@ import "./globals.css";
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { SessionProvider } from 'next-auth/react';
 
 const inter = Inter({
   subsets: ["latin"],
@@ -31,11 +32,13 @@ export default function RootLayout({
         className={`${inter.variable} ${playfair.variable} bg-[#F7F4ED] text-[#2B2B2B]`}
       >
         <div className="flex min-h-screen flex-col">
-          <Header />
+          <SessionProvider>
+            <Header />
 
-          <main className="flex-1">{children}</main>
+            <main className="flex-1">{children}</main>
 
-          <Footer />
+            <Footer />
+          </SessionProvider>
         </div>
       </body>
     </html>
