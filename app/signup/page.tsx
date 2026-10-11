@@ -3,13 +3,6 @@
 import Link from "next/link";
 import { useActionState } from "react";
 import { handleAddUser, State } from "../../lib/actions";
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Sign Up",
-  description:
-    "Create a ShelfSpace account and start building and tracking your personal reading library.",
-};
 
 const initialState: State = { message: null, errors: {} };
 

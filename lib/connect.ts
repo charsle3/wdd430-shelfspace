@@ -187,15 +187,6 @@ export async function deleteReview(
   return result.rows.length > 0;
 }
 
-export async function updateReview(userId: number, bookId: number, review: { rating: number, content: string }): Promise<{ rating: number, content: string } | null> {
-    const result = await sql<{ rating: number, content: string }>`
-        UPDATE reviews
-        SET rating = ${review.rating}, content = ${review.content}
-        WHERE user_id = ${userId} AND book_id = ${bookId}
-        RETURNING rating, content`;
-    return result.rows[0] ?? null;
-}
-
 export async function getUserByName(name: string): Promise<{ id: number, name: string, pass_hash: string }[]> {
     const result = await sql<{ id: number, name: string, pass_hash: string }>`SELECT * FROM users WHERE name = ${name}`;
     return result.rows;

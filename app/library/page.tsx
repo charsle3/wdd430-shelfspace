@@ -23,7 +23,7 @@ export default async function LibraryPage() {
       headers: {
         cookie: cookie || '',
       },
-
+  });
   if (!response.ok) {
     throw new Error("Failed to fetch library");
   }

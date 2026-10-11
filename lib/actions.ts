@@ -207,6 +207,11 @@ export async function saveReviewAction(
 
   const { bookId, rating, content, mode } = parsed.data;
 
+  const session = await auth();
+  const user = await getUserByName(session?.user?.name || '');
+
+  const USER_ID = (user[0]?.id || 0);
+
   try {
     if (mode === "create") {
       const saved = await createReview({
@@ -261,6 +266,11 @@ export async function deleteReviewAction(
       success: false,
     };
   }
+
+  const session = await auth();
+  const user = await getUserByName(session?.user?.name || '');
+
+  const USER_ID = (user[0]?.id || 0);
 
   try {
     const deleted = await deleteReview(bookId, USER_ID);

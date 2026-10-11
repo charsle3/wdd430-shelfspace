@@ -1,12 +1,11 @@
-
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-
+import { auth } from "@/auth";
 import ProgressBar from "@/components/ProgressBar";
 import { headers } from "next/headers";
 import { handleRemoveBook } from "@/lib/actions";
-import { getBookById,getReviewsByBookAndUser } from "@/lib/connect";
+import { getBookById, getReviewsByBookAndUser, getUserByName } from "@/lib/connect";
 
 import ReviewSection from "@/components/ReviewSection";
 
@@ -15,8 +14,6 @@ interface BookPageProps {
     id: string;
   }>;
 }
-
-const USER_ID = 1;
 
 const statusLabels: Record<string, string> = {
   reading: "Currently Reading",
@@ -39,6 +36,11 @@ export async function generateMetadata({
 }: BookPageProps): Promise<Metadata> {
   const { id } = await params;
   const bookId = getValidBookId(id);
+
+  const session = await auth();
+  const user = await getUserByName(session?.user?.name || '');
+
+  const USER_ID = (user[0]?.id || 0);
 
   if (bookId === null) {
     return {
@@ -99,6 +101,13 @@ export default async function BookPage({
           <p className="text-red-500">Book not found</p>
         </section>
       );
+  }
+
+  const session = await auth();
+  const user = await getUserByName(session?.user?.name || '');
+
+  const USER_ID = (user[0]?.id || 0);
+
   if (bookId === null) {
     notFound();
   }
