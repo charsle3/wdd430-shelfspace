@@ -1,4 +1,11 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Home",
+  description:
+    "Build your personal library, track your reading progress, and discover your next favorite book with ShelfSpace.",
+};
 
 export default function HomePage() {
   return (

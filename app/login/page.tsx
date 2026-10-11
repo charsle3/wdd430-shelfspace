@@ -1,8 +1,14 @@
 'use client';
-
+import type { Metadata } from "next";
 import Link from "next/link";
 import { useActionState } from 'react';
 import { authenticate } from '@/lib/actions';
+
+export const metadata: Metadata = {
+  title: "Login",
+  description:
+    "Log in to ShelfSpace to access your personal library and continue tracking your reading progress.",
+};
   
 export default function LoginPage() {
   const [errorMessage, formAction, isPending] = useActionState(
