@@ -1,7 +1,10 @@
 import Link from "next/link";
 import NavBar from "./NavBar";
+import { auth, signOut } from '@/auth';
 
-export default function Header() {
+export default async function Header() {
+  const session = await auth();
+
   return (
     <header className="border-b border-[#D8C7A3]/50 bg-[#F7F4ED]">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
@@ -17,12 +20,23 @@ export default function Header() {
 
         <NavBar />
 
-        <Link
-          href="/login"
-          className="rounded-full border border-[#355E3B] px-5 py-2 text-sm font-semibold text-[#355E3B] hover:bg-[#355E3B] hover:text-white"
-        >
-          Sign In
-        </Link>
+        {session ? (
+          <form
+            action={async () => {
+              'use server';
+              await signOut({ redirectTo: '/' });
+            }}
+          >
+            <button className="rounded-full border border-[#355E3B] px-5 py-2 text-sm font-semibold text-[#355E3B] hover:bg-[#355E3B] hover:text-white" type="submit">Sign Out</button>
+          </form>
+        ) : (
+          <Link
+            href="/login"
+            className="rounded-full border border-[#355E3B] px-5 py-2 text-sm font-semibold text-[#355E3B] hover:bg-[#355E3B] hover:text-white"
+          >
+            Sign In
+          </Link>
+        )}
       </div>
     </header>
   );

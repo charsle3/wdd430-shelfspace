@@ -1,5 +1,6 @@
 import Link from "next/link";
 import EditBookForm from "@/components/EditForm";
+import { headers } from "next/headers";
 
 import type { Metadata } from "next";
 
@@ -50,8 +51,12 @@ export default async function EditBookPage({
   const baseUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
     : 'http://localhost:3000';
+  const cookie = (await headers()).get('cookie');
   const response = await fetch(`${baseUrl}/api/books/${id}`, {
       cache: 'no-store',
+      headers: {
+        cookie: cookie || '',
+      },
   });
 
   if (!response.ok) {

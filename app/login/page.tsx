@@ -1,13 +1,20 @@
-import Link from "next/link";
+'use client';
 import type { Metadata } from "next";
+import Link from "next/link";
+import { useActionState } from 'react';
+import { authenticate } from '@/lib/actions';
 
 export const metadata: Metadata = {
   title: "Login",
   description:
     "Log in to ShelfSpace to access your personal library and continue tracking your reading progress.",
 };
-
+  
 export default function LoginPage() {
+  const [errorMessage, formAction, isPending] = useActionState(
+    authenticate,
+    undefined,
+  );
   return (
     <section className="flex min-h-[700px] items-center justify-center px-6 py-16">
       <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-sm md:p-10">
@@ -25,19 +32,20 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <form className="mt-8 space-y-5">
+        <form action={formAction} className="mt-8 space-y-5">
           <div>
             <label
-              htmlFor="email"
+              htmlFor="userName"
               className="mb-2 block text-sm font-semibold text-[#2B2B2B]"
             >
-              Email
+              Username
             </label>
 
             <input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
+              id="userName"
+              type="text"
+              placeholder="Your username"
+              name="name"
               className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#355E3B] focus:ring-2 focus:ring-[#355E3B]/10"
             />
           </div>
@@ -54,6 +62,7 @@ export default function LoginPage() {
               id="password"
               type="password"
               placeholder="••••••••"
+              name="password"
               className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#355E3B] focus:ring-2 focus:ring-[#355E3B]/10"
             />
           </div>
@@ -64,6 +73,7 @@ export default function LoginPage() {
           >
             Sign In
           </button>
+          {errorMessage && <p role="alert">{errorMessage}</p>}
         </form>
 
         <p className="mt-7 text-center text-sm text-gray-500">

@@ -1,4 +1,8 @@
+'use client';
+
 import Link from "next/link";
+import { useActionState } from "react";
+import { handleAddUser, State } from "../../lib/actions";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -7,7 +11,10 @@ export const metadata: Metadata = {
     "Create a ShelfSpace account and start building and tracking your personal reading library.",
 };
 
+const initialState: State = { message: null, errors: {} };
+
 export default function SignupPage() {
+  const [state, formAction] = useActionState(handleAddUser, initialState);
   return (
     <section className="flex min-h-[700px] items-center justify-center px-6 py-16">
       <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-sm md:p-10">
@@ -25,7 +32,7 @@ export default function SignupPage() {
           </p>
         </div>
 
-        <form className="mt-8 space-y-5">
+        <form className="mt-8 space-y-5" action={formAction}>
           <div>
             <label htmlFor="name" className="mb-2 block text-sm font-semibold">
               Name
@@ -34,22 +41,15 @@ export default function SignupPage() {
             <input
               id="name"
               type="text"
-              placeholder="Your name"
+              name="name"
+              placeholder="Your username"
               className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#355E3B]"
             />
+            <div id="nameHelp" className="text-sm text-gray-500" aria-live="polite" aria-atomic="true">
+              {state.errors?.name && (
+                  <p className="text-sm text-red-500">{state.errors.name}</p>
+              )}
           </div>
-
-          <div>
-            <label htmlFor="email" className="mb-2 block text-sm font-semibold">
-              Email
-            </label>
-
-            <input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#355E3B]"
-            />
           </div>
 
           <div>
@@ -63,9 +63,15 @@ export default function SignupPage() {
             <input
               id="password"
               type="password"
+              name="password"
               placeholder="Create a password"
               className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#355E3B]"
             />
+            <div id="passwordHelp" className="text-sm text-gray-500" aria-live="polite" aria-atomic="true">
+              {state.errors?.password && (
+                  <p className="text-sm text-red-500">{state.errors.password}</p>
+              )}
+            </div>
           </div>
 
           <button

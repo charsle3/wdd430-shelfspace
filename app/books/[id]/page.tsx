@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 
 import ProgressBar from "@/components/ProgressBar";
+import { headers } from "next/headers";
+import { handleRemoveBook } from "@/lib/actions";
 import { getBookById,getReviewsByBookAndUser } from "@/lib/connect";
 
 import ReviewSection from "@/components/ReviewSection";
@@ -74,6 +76,29 @@ export default async function BookPage({
   const { id } = await params;
   const bookId = getValidBookId(id);
 
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : 'http://localhost:3000';
+  const cookie = (await headers()).get('cookie');
+  const response = await fetch(`${baseUrl}/api/books/${id}`, {
+      cache: 'no-store',
+      headers: {
+        cookie: cookie || '',
+      },
+  });
+
+  if (response.status === 404) {
+      return (
+        <section className="mx-auto max-w-6xl px-6 py-14">
+          <Link
+            href="/library"
+            className="text-sm font-medium text-[#355E3B] hover:underline"
+          >
+            ← Back to library
+          </Link>
+          <p className="text-red-500">Book not found</p>
+        </section>
+      );
   if (bookId === null) {
     notFound();
   }
@@ -135,13 +160,12 @@ export default async function BookPage({
             >
               Edit Book
             </Link>
-
-            <button
-              type="button"
-              className="rounded-full border border-[#B44C4C] px-6 py-3 font-semibold text-[#B44C4C] hover:bg-[#B44C4C]/5"
-            >
-              Remove
-            </button>
+            <form action={handleRemoveBook}>
+              <input type="hidden" name="id" value={id} />
+              <button type="submit" className="rounded-full border border-[#B44C4C] cursor-pointer px-6 py-3 font-semibold text-[#B44C4C]">
+                Remove
+              </button>
+            </form>
           </div>
 
           <div className="mt-12 border-t border-[#D8C7A3]/50 pt-8">

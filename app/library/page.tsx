@@ -1,5 +1,7 @@
 
 import Link from "next/link";
+import BookList from "@/components/BookList";
+import { headers } from "next/headers";
 import type { Metadata } from "next";
 import LibraryFilters from "@/components/LibraryFilters";
 import type { LibraryBook } from "@/lib/types";
@@ -12,14 +14,15 @@ export const metadata: Metadata = {
 
 export default async function LibraryPage() {
   const baseUrl = process.env.VERCEL_URL
-    ? process.env.VERCEL_URL.startsWith("http")
-      ? process.env.VERCEL_URL
-      : `https://${process.env.VERCEL_URL}`
-    : "http://localhost:3000";
+    ? `https://${process.env.VERCEL_URL}`
+    : 'http://localhost:3000';
 
+  const cookie = (await headers()).get('cookie');
   const response = await fetch(`${baseUrl}/api/library`, {
-    cache: "no-store",
-  });
+      cache: 'no-store',
+      headers: {
+        cookie: cookie || '',
+      },
 
   if (!response.ok) {
     throw new Error("Failed to fetch library");
