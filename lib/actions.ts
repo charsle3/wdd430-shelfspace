@@ -102,7 +102,6 @@ export async function handleUpdateBook(prevState: State, formData: FormData): Pr
 }
 
 export async function handleAddUser(prevState: State, formData: FormData): Promise<State> {
-  await requireOwnerSession();
   const raw = {
     name: String(formData.get('name')),
     password: String(formData.get('password')),
