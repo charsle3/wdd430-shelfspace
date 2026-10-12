@@ -46,7 +46,7 @@ export default function HomePage() {
           <div className="h-[440px] w-[320px] rotate-3 rounded-[2rem] bg-[#355E3B] p-7 shadow-2xl">
             <div className="flex h-full flex-col justify-between rounded-[1.5rem] border border-white/30 p-6">
               <div>
-                <p className="text-sm uppercase tracking-[0.3em] text-[#D8C7A3]">
+                <p className="text-sm uppercase tracking-[0.3em] text-[#d6cbb4]">
                   Currently reading
                 </p>
 
