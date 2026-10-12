@@ -176,9 +176,6 @@ export type ReviewState = {
   success: boolean;
 };
 
-
-const USER_ID = 1; // Temporary until authentication is implemented
-
 const reviewSchema = z.object({
   bookId: z.number().int().positive(),
   rating: z.number().int().min(1).max(5),

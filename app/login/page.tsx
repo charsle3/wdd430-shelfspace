@@ -4,7 +4,7 @@ import { useActionState } from 'react';
 import { authenticate } from '@/lib/actions';
   
 export default function LoginPage() {
-  const [errorMessage, formAction, isPending] = useActionState(
+  const [errorMessage, formAction] = useActionState(
     authenticate,
     undefined,
   );

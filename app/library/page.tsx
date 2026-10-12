@@ -1,6 +1,5 @@
 
 import Link from "next/link";
-import BookList from "@/components/BookList";
 import { headers } from "next/headers";
 import type { Metadata } from "next";
 import LibraryFilters from "@/components/LibraryFilters";
