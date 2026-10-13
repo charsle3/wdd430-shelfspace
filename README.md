@@ -2,8 +2,8 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Contributors
 
-James Kingsley
-Andrea Ramos
+- James Kingsley
+- Andrea Ramos
 
 ## Setup
 
